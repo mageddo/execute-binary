@@ -1,23 +1,23 @@
 package com.mageddo;
 
 import java.io.File;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-
 public class Main {
 	public static void main(String[] args) throws Exception {
 
-		final URL resource = Main.class.getResource("/myprogram");
-		if (resource == null) {
+		final InputStream in = Main.class.getResourceAsStream("/myprogram");
+		if (in == null) {
 			throw new RuntimeException("program not found");
 		}
 
-		final File targetProgram = new File("/tmp/myprogram");
-		Files.copy(resource.openStream(), targetProgram.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		targetProgram.setExecutable(true);
+		final File tmpProgram = Files.createTempFile("mypgrogram", ".tmp").toFile();
+		tmpProgram.deleteOnExit();
+		Files.copy(in, tmpProgram.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		tmpProgram.setExecutable(true);
 
-		final Process p = Runtime.getRuntime().exec(targetProgram.getAbsolutePath());
+		final Process p = Runtime.getRuntime().exec(tmpProgram.getAbsolutePath());
 		System.out.println(p.waitFor());
 
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
@@ -31,3 +31,4 @@ public class Main {
 		System.out.println();
 	}
 }
+
