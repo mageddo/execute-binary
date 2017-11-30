@@ -13,8 +13,8 @@ public class Main {
 		}
 
 		final File tmpProgram = Files.createTempFile("mypgrogram", ".tmp").toFile();
-		tmpProgram.deleteOnExit();
 		Files.copy(in, tmpProgram.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		tmpProgram.deleteOnExit();
 		tmpProgram.setExecutable(true);
 
 		final Process p = Runtime.getRuntime().exec(tmpProgram.getAbsolutePath());
